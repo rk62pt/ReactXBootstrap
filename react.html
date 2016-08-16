@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>react</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Bootstrap x React</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="react.html">Home</a></li>
+            <li><a href="test.html">bootstrap</a></li>
+            <li><a href="#">Contact</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+          <!-- <ul class="nav navbar-nav navbar-right">
+            <li class="active"><span id="hello" class="navbar-text pull-right"></span></li>
+          </ul> -->
+          <span class="navbar-right pull-right">
+            <span id="hello" class="navbar-text"></span>
+          </span>
+        </div><!--/.nav-collapse -->
+      </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="jumbotron">
+              <h1>React Timer</h1>
+              <div id="timer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="well well-lg">
+            <div id="item"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="well well-lg">
+            <div id ="inlineStyle"></div>
+          </div>
+        </div>
+      </div>
+   </div>
+      <script src="build/react.js"></script>
+      <script src="build/react-dom.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+      <script type="text/babel">
+      var spanStyle = {
+        color: 'red',
+        fontSize:'26px',
+        // backgroundImage: 'url(' + imgUrl + ')',
+        WebkitTransition: 'all', // note the capital 'W' here
+        msTransition: 'all' // 'ms' is the only lowercase vendor prefix
+      };
+      class ExampleApplication extends React.Component {
+        render() {
+          var elapsed = Math.round(this.props.elapsed  / 100);
+          var seconds = elapsed / 10 + (elapsed % 10 ? '' : '.0' );
+          var test = Math.floor(elapsed / 10);
+          var message =`React has been successfully running for ${seconds} seconds.`;
+          var message2 ='React has been successfully running for '+seconds+' seconds.';
+          if((test> 2)&&(test%10 >= 0 && test%10 <= 2)  ){
+            return <p>React has been successfully running for <span style={spanStyle}>{seconds}</span> seconds.</p>;
+          }
+          return <p>{message}</p>;
+        }
+      }
+      var start = new Date().getTime();
+      setInterval(() => {
+        ReactDOM.render(
+          <ExampleApplication elapsed={new Date().getTime() - start} />,
+          document.getElementById('timer')
+        );
+      }, 100);
+
+//HelloMessage
+
+      var HelloMessage = React.createClass({
+        getInitialState: function() {
+          return {
+            name: "Ryan",
+            site: "http://www.runoob.com"
+          };
+        },
+        render: function() {
+          return (
+            <div><span className="glyphicon glyphicon-user"></span> Hello <Name name={this.state.name}/></div>
+          );
+        }
+      });
+
+      var Name = React.createClass({
+        render: function() {
+          return <span>{this.props.name}</span>;
+        }
+      });
+
+      ReactDOM.render(
+        <HelloMessage/>,
+        document.getElementById('hello')
+      );
+
+//items
+      var TodoList = React.createClass({
+          render: function() {
+            var createItem = function(item) {
+              return <li key={item.id}>{item.text}</li>;
+            };
+            return <ul>{this.props.items.map(createItem)}</ul>;
+          }
+        });
+        var TodoApp = React.createClass({
+          getInitialState: function() {
+            return {items: [], text: ''};
+          },
+          onChange: function(e) {
+            this.setState({text: e.target.value});
+          },
+          handleSubmit: function(e) {
+            e.preventDefault();
+            var nextItems = this.state.items.concat([{text: this.state.text, id: Date.now()}]);
+            var nextText = '';
+            this.setState({items: nextItems, text: nextText});
+          },
+          render: function() {
+            return (
+              <div>
+                <h3>TODO</h3>
+                <TodoList items={this.state.items} />
+                <form onSubmit={this.handleSubmit}>
+                  <input onChange={this.onChange} value={this.state.text} />
+                  <button>{'Add #' + (this.state.items.length + 1)}</button>
+                </form>
+              </div>
+            );
+          }
+        });
+
+        ReactDOM.render(
+          <TodoApp />,
+          document.getElementById('item')
+        );
+        //inline style
+
+        var divStyle = {
+          color: 'red',
+          // backgroundImage: 'url(' + imgUrl + ')',
+          WebkitTransition: 'all', // note the capital 'W' here
+          msTransition: 'all' // 'ms' is the only lowercase vendor prefix
+        };
+
+        ReactDOM.render(<div style={divStyle}>Hello World!</div>, document.getElementById('inlineStyle'));
+    </script>
+</body>
+</html>
