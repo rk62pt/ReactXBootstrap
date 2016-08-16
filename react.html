@@ -238,9 +238,19 @@
           },
 
           componentDidMount: function() {
-            $.getJSON( this.props.source, function(){
-              format: "json"
-            }).done(function(data) {
+            // $.getJSON( this.props.source, function(){
+            //   format: "json"
+            // }).done(function(data) {
+            //     // console.log(data);
+            //     var rest = data[0];
+            //     this.setState({
+            //       city: rest.County,
+            //       uvi: rest.UVI
+            //     });
+            // }.bind(this));
+            $.post( this.props.source, function(){
+
+            }, 'json').done(function(data) {
                 // console.log(data);
                 var rest = data[0];
                 this.setState({
