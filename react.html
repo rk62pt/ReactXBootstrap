@@ -69,9 +69,22 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="well well-lg">
+            <div id="divAjax"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="well well-lg">
+            <div id ="divOpenData"></div>
+          </div>
+        </div>
+      </div>
    </div>
       <script src="build/react.js"></script>
       <script src="build/react-dom.js"></script>
+      <script src="js/jquery-3.1.0.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
       <script type="text/babel">
       var spanStyle = {
@@ -179,6 +192,85 @@
         };
 
         ReactDOM.render(<div style={divStyle}>Hello World!</div>, document.getElementById('inlineStyle'));
+
+        //ajax
+        var UserGist = React.createClass({
+          getInitialState: function() {
+            return {
+              username: '',
+              lastGistUrl: ''
+            };
+          },
+
+          componentDidMount: function() {
+            console.log(this.props.source);
+            this.serverRequest = $.get(this.props.source, function (result) {
+              var lastGist = result[0];
+              this.setState({
+                username: lastGist.owner.login,
+                lastGistUrl: lastGist.html_url
+              });
+            }.bind(this));
+          },
+
+          render: function() {
+            return (
+              <div>
+                {this.state.username} last gist is .
+                <a href={this.state.lastGistUrl}>here</a>.
+              </div>
+            );
+          }
+        });
+
+        ReactDOM.render(
+          <UserGist source="https://api.github.com/users/rk62pt/gists" />,
+          document.getElementById('divAjax')
+        );
+
+        //ajax2
+        var OpenData = React.createClass({
+          getInitialState: function() {
+            return {
+              city: '',
+              uvi: ''
+            };
+          },
+
+          componentDidMount: function() {
+            $.getJSON( this.props.source, function(){
+              format: "json"
+            }).done(function(data) {
+                // console.log(data);
+                var rest = data[0];
+                this.setState({
+                  city: rest.County,
+                  uvi: rest.UVI
+                });
+            }.bind(this));
+          },
+
+          render: function() {
+            return (
+              <div>
+                {this.state.city} UVI is <span> </span>
+                <span>{this.state.uvi}</span>.
+              </div>
+            );
+          }
+        });
+
+        ReactDOM.render(
+          <OpenData source="http://opendata.epa.gov.tw/ws/Data/UV/?$orderby=PublishAgency&$skip=0&$top=1000&format=json&callback=?" />,
+          document.getElementById('divOpenData')
+        );
+
+        // var epaAPI = "http://opendata.epa.gov.tw/ws/Data/UV/?$orderby=PublishAgency&$skip=0&$top=1000&format=json&callback=?";
+        // $.getJSON( epaAPI, function(){
+        //   format: "json"
+        // }).done(function(data) {
+        //     console.log(data);
+        // });
     </script>
 </body>
 </html>
